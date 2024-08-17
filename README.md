@@ -1,6 +1,6 @@
-# Anarchy Autokey
+# RF Autokey
 
-O Anarchy Autokey é um programa que permite enviar teclas repetidamente o jogo RF Online, mesmo que a janela do jogo não esteja em foco.
+O RF Autokey é um programa que permite enviar teclas repetidamente o jogo RF Online, mesmo que a janela do jogo não esteja em foco.
 Ele possui uma interface gráfica  simples que permite ao usuário configurar as teclas e delays desejados.
 
 ## Funcionalidades
