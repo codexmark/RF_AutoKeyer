@@ -124,5 +124,10 @@ set_keys_button.pack(pady=5)
 start_button = tk.Button(root, text="Ativar", command=toggle_program)
 start_button.pack(pady=5)
 
+# Adicionando a marca d'água
+watermark = tk.Label(root, text="codexmark - 2024 todos os direitos reservados", 
+                      fg="gray", font=("Arial", 8))
+watermark.pack(side=tk.BOTTOM, pady=10)
+
 # Iniciando a interface
 root.mainloop()
