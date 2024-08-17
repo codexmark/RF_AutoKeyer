@@ -7,19 +7,22 @@ from tkinter import messagebox, ttk
 import pygetwindow as gw
 
 # Variáveis globais
-key_to_send = None
+keys_to_send = [None, None, None]  # Lista para armazenar as teclas
+delays = [0.1, 0.1, 0.1]  # Lista para armazenar os delays
 running = False
 send_thread = None
 selected_window = None
 
 def send_key():
-    """Função que envia a tecla repetidamente enquanto o programa estiver ativo."""
+    """Função que envia as teclas repetidamente enquanto o programa estiver ativo."""
     while running:
-        if key_to_send and selected_window:
-            # Ativa a janela selecionada
-            selected_window.activate()
-            pyautogui.press(key_to_send)
-            time.sleep(0.1)  # Ajuste o intervalo conforme necessário
+        if selected_window:
+            selected_window.activate()  # Ativa a janela selecionada
+            for i in range(3):
+                if keys_to_send[i]:
+                    pyautogui.press(keys_to_send[i])
+                    time.sleep(delays[i])  # Usa o delay configurado para cada tecla
+            time.sleep(0.1)  # Intervalo entre ciclos de envio
 
 def toggle_program():
     """Ativa ou desativa o envio de teclas."""
@@ -35,15 +38,21 @@ def toggle_program():
         start_button.config(text="Ativar")
         print("Programa desativado.")
 
-def set_key():
-    """Configura a tecla a ser enviada."""
-    global key_to_send
-    key_to_send = entry_key.get()
-    if key_to_send:
-        print(f"Tecla configurada para: {key_to_send}")
-        messagebox.showinfo("Configuração de Tecla", f"Tecla configurada para: {key_to_send}")
-    else:
-        messagebox.showwarning("Erro", "Por favor, insira uma tecla válida.")
+def set_keys_and_delays():
+    """Configura as teclas e delays a serem enviados."""
+    global keys_to_send, delays
+    for i in range(3):
+        keys_to_send[i] = entry_keys[i].get()
+        try:
+            delays[i] = float(entry_delays[i].get())
+            if delays[i] < 0:
+                raise ValueError("Delay não pode ser negativo.")
+        except ValueError:
+            messagebox.showwarning("Erro", f"Por favor, insira um valor válido para o delay da tecla {i+1}.")
+            return
+    
+    print(f"Teclas configuradas: {keys_to_send}, Delays: {delays}")
+    messagebox.showinfo("Configuração de Teclas", f"Teclas configuradas: {keys_to_send}\nDelays: {delays}")
 
 def on_home_key():
     """Função chamada quando a tecla 'Home' é pressionada."""
@@ -71,16 +80,28 @@ root.title("Anarchy Autokey")
 
 # Descrição das funcionalidades
 description = tk.Label(root, text="Anarchy Autokey\n\n"
-                                    "1. Insira a tecla que deseja enviar no campo abaixo.\n"
-                                    "2. Selecione a janela desejada no dropdown.\n"
-                                    "3. Pressione 'Home' para ativar/desativar o envio de teclas.\n"
-                                    "4. A tecla será enviada repetidamente enquanto o programa estiver ativado.",
+                                    "1. Insira até 3 teclas que deseja enviar nos campos abaixo.\n"
+                                    "2. Configure um delay para cada tecla.\n"
+                                    "3. Selecione a janela desejada no dropdown.\n"
+                                    "4. Pressione 'Home' para ativar/desativar o envio de teclas.\n"
+                                    "5. As teclas serão enviadas repetidamente enquanto o programa estiver ativado.",
                        padx=10, pady=10)
 description.pack()
 
-# Campo de entrada para a tecla
-entry_key = tk.Entry(root, width=10)
-entry_key.pack(pady=5)
+# Campos de entrada para as teclas e delays
+entry_keys = []
+entry_delays = []
+for i in range(3):
+    frame = tk.Frame(root)
+    frame.pack(pady=5)
+
+    entry_key = tk.Entry(frame, width=10)
+    entry_key.pack(side=tk.LEFT, padx=5)
+    entry_keys.append(entry_key)
+
+    entry_delay = tk.Entry(frame, width=5)
+    entry_delay.pack(side=tk.LEFT, padx=5)
+    entry_delays.append(entry_delay)
 
 # Dropdown para selecionar a janela
 window_label = tk.Label(root, text="Selecione a Janela:")
@@ -91,9 +112,9 @@ window_dropdown.pack(pady=5)
 update_window_list()  # Atualiza a lista de janelas ao iniciar
 window_dropdown.bind("<<ComboboxSelected>>", select_window)  # Atualiza a janela selecionada
 
-# Botão para configurar a tecla
-set_key_button = tk.Button(root, text="Configurar Tecla", command=set_key)
-set_key_button.pack(pady=5)
+# Botão para configurar as teclas e delays
+set_keys_button = tk.Button(root, text="Configurar Teclas e Delays", command=set_keys_and_delays)
+set_keys_button.pack(pady=5)
 
 # Botão para ativar/desativar o programa
 start_button = tk.Button(root, text="Ativar", command=toggle_program)
