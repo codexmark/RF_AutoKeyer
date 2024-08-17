@@ -13,6 +13,10 @@ running = False
 send_thread = None
 selected_window = None
 
+# Inicializando listas para os campos de entrada
+entry_keys = []
+entry_delays = []
+
 def send_key():
     """Função que envia as teclas repetidamente enquanto o programa estiver ativo."""
     while running:
@@ -88,17 +92,17 @@ description = tk.Label(root, text="Anarchy Autokey\n\n"
                        padx=10, pady=10)
 description.pack()
 
-# Campos de entrada para as teclas e delays
-entry_keys = []
-entry_delays = []
+# Labels e campos de entrada para as teclas e delays
 for i in range(3):
     frame = tk.Frame(root)
     frame.pack(pady=5)
 
-    entry_key = tk.Entry(frame, width=10)
+    tk.Label(frame, text=f"Tecla {i + 1}:").pack(side=tk.LEFT)
+    entry_key = tk.Entry(frame, width=5)
     entry_key.pack(side=tk.LEFT, padx=5)
     entry_keys.append(entry_key)
 
+    tk.Label(frame, text=f"Delay {i + 1} (segundos):").pack(side=tk.LEFT)
     entry_delay = tk.Entry(frame, width=5)
     entry_delay.pack(side=tk.LEFT, padx=5)
     entry_delays.append(entry_delay)
